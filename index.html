@@ -121,7 +121,7 @@
                     <h3 class="text-xl font-bold mb-2">Game 1: The Boolean Blacksmith</h3>
                     <p class="text-gray-400 mb-4">You have a new role: "Senior Backend Engineer" specializing in distributed systems, located in Vienna, Austria. The client requires experience with Go (Golang) and Kubernetes. They have a strong preference for candidates who have contributed to open-source projects.</p>
                     <p class="text-gray-300 mb-6 font-semibold">Your task: Craft the most effective Boolean search string to find these candidates on a professional networking site.</p>
-                    
+
                     <form id="gameForm">
                         <textarea id="gameInput" rows="4" class="w-full bg-gray-700 border border-gray-600 rounded-md p-3 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500" placeholder="e.g., (engineer OR developer) AND ..."></textarea>
                         <button type="submit" class="mt-4 bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded-md transition duration-300">Submit & Get Feedback</button>
@@ -144,7 +144,7 @@
                         "We're seeking a Lead UX Designer to own the user experience for our flagship B2B SaaS product. You'll guide a team of 3 designers, work with product managers to translate complex requirements into intuitive workflows, and champion a user-centered design culture. Must have 7+ years of experience, a portfolio showcasing complex problem-solving, and proficiency in Figma. Experience with data visualization is a huge plus."
                     </div>
                     <p class="text-gray-300 mb-6 font-semibold">Your task: Write a short candidate persona (3-4 sentences) that captures the essence of the ideal candidate.</p>
-                    
+
                     <form id="gameForm2">
                         <textarea id="gameInput2" rows="4" class="w-full bg-gray-700 border border-gray-600 rounded-md p-3 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500" placeholder="e.g., An experienced design leader motivated by mentoring..."></textarea>
                         <button type="submit" class="mt-4 bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded-md transition duration-300">Submit & Get Feedback</button>
@@ -164,7 +164,7 @@
                     <h3 class="text-xl font-bold mb-2">Game 3: The Outreach Originator</h3>
                     <p class="text-gray-400 mb-4">You've found a promising passive candidate for a "Senior DevOps Engineer" role. Her online profile shows she's been at her current company for 5 years and has spoken at a conference about "Scaling CI/CD Pipelines".</p>
                     <p class="text-gray-300 mb-6 font-semibold">Your task: Write a concise and personalized outreach message (under 100 words) to this candidate to gauge her interest.</p>
-                    
+
                     <form id="gameForm3">
                         <textarea id="gameInput3" rows="5" class="w-full bg-gray-700 border border-gray-600 rounded-md p-3 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500" placeholder="e.g., Hi [Candidate Name], I was impressed by your talk on..."></textarea>
                         <button type="submit" class="mt-4 bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded-md transition duration-300">Submit & Get Feedback</button>
@@ -184,7 +184,7 @@
                     <h3 class="text-xl font-bold mb-2">Game 4: The X-Ray Expert</h3>
                     <p class="text-gray-400 mb-4">You need to find Python developers in Berlin who have experience with Django and have profiles on GitHub. Standard searches are not yielding good results.</p>
                     <p class="text-gray-300 mb-6 font-semibold">Your task: Write a Google X-ray search string to find user profiles on GitHub that match these criteria.</p>
-                    
+
                     <form id="gameForm4">
                         <textarea id="gameInput4" rows="4" class="w-full bg-gray-700 border border-gray-600 rounded-md p-3 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500" placeholder="e.g., site:github.com ..."></textarea>
                         <button type="submit" class="mt-4 bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded-md transition duration-300">Submit & Get Feedback</button>
@@ -321,13 +321,18 @@
             const chatBox = document.getElementById('chatBox');
             const mobileMenuButton = document.getElementById('mobileMenuButton');
             const mobileMenu = document.getElementById('mobileMenu');
-            
+
             // --- GEMINI API CONFIG ---
-            // NOTE: In a real application, the API key would not be exposed here.
-            // Canvas environment will provide the necessary credentials.
-            const API_KEY = ""; 
-            const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;
-            
+            // --- GEMINI API CONFIG ---
+            // IMPORTANT: To make this application work, you must insert your own Google Gemini API key here.
+            // 1. Visit https://aistudio.google.com/app/apikey to get your key.
+            // 2. Replace the placeholder "YOUR_API_KEY_HERE" with your actual key.
+            //
+            // WARNING: Do not share this file publicly with the key included. In a real production
+            // application, this key should be kept on a secure backend server.
+            const API_KEY = "YOUR_API_KEY_HERE";
+            const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${API_KEY}`;
+
             // --- FUNCTIONS ---
 
             // Initialize the application
@@ -370,7 +375,7 @@
                     mobileMenu.classList.add('hidden');
                 }
             };
-            
+
             // Show a specific page and hide others
             const showPage = (pageId) => {
                 pages.forEach(page => {
@@ -382,16 +387,16 @@
             const renderLeaderboard = () => {
                 // Sort by score descending
                 leaderboardData.sort((a, b) => b.score - a.score);
-                
+
                 leaderboardBody.innerHTML = ''; // Clear existing table
-                
+
                 leaderboardData.forEach((player, index) => {
                     const row = document.createElement('tr');
                     const isCurrentUser = player.name === currentPlayer.name;
-                    row.className = isCurrentUser 
-                        ? 'bg-cyan-900/50 font-bold' 
+                    row.className = isCurrentUser
+                        ? 'bg-cyan-900/50 font-bold'
                         : 'border-b border-gray-700 hover:bg-gray-700/50';
-                    
+
                     row.innerHTML = `
                         <td class="p-3">${index + 1}</td>
                         <td class="p-3">${player.name} ${isCurrentUser ? '(You)' : ''}</td>
@@ -410,12 +415,12 @@
                 feedbackContainer.classList.remove('hidden');
                 feedbackResult.classList.add('hidden');
                 feedbackLoader.style.display = 'block';
-                
+
                 const prompt = `
                     You are an expert AI Sourcing Coach for recruiters. A participant has submitted the following Boolean search string for a 'Senior Backend Engineer' role in Vienna, Austria, with skills in Go (Golang), Kubernetes, and open-source contributions.
-                    
+
                     Submission: "${submission}"
-                    
+
                     Your task is to:
                     1.  Analyze the string for effectiveness, precision, and potential missed keywords.
                     2.  Provide a score out of 100. The score MUST be on its own line like this: SCORE: [number].
@@ -426,7 +431,7 @@
 
                 try {
                     const responseText = await callGemini(prompt);
-                    
+
                     // Extract score and update player data
                     const scoreMatch = responseText.match(/SCORE: (\d+)/);
                     let score = 0;
@@ -439,7 +444,7 @@
                         }
                         renderLeaderboard();
                     }
-                    
+
                     // Display feedback
                     const feedbackHtml = responseText
                         .replace(/SCORE: \d+/, `<h3>Your Score for this submission: <strong class="text-cyan-400">${score}/100</strong></h3><p>Your total score is now ${currentPlayer.score}.</p>`)
@@ -465,14 +470,14 @@
                 feedbackContainer2.classList.remove('hidden');
                 feedbackResult2.classList.add('hidden');
                 feedbackLoader2.style.display = 'block';
-                
+
                 const prompt = `
                     You are an expert AI Sourcing Coach. A participant has analyzed a job description for a "Lead UX Designer" and submitted a candidate persona.
-                    
+
                     Job Description Snippet: "We're seeking a Lead UX Designer to own the user experience for our flagship B2B SaaS product. You'll guide a team of 3 designers, work with product managers to translate complex requirements into intuitive workflows, and champion a user-centered design culture. Must have 7+ years of experience, a portfolio showcasing complex problem-solving, and proficiency in Figma. Experience with data visualization is a huge plus."
-                    
+
                     Submission: "${submission}"
-                    
+
                     Your task is to:
                     1.  Evaluate how well the persona captures the key aspects of the role (leadership, experience, skills, motivation).
                     2.  Provide a score out of 100. The score MUST be on its own line like this: SCORE: [number].
@@ -482,7 +487,7 @@
 
                 try {
                     const responseText = await callGemini(prompt);
-                    
+
                     const scoreMatch = responseText.match(/SCORE: (\d+)/);
                     let score = 0;
                     if (scoreMatch) {
@@ -494,7 +499,7 @@
                         }
                         renderLeaderboard();
                     }
-                    
+
                     const feedbackHtml = responseText
                         .replace(/SCORE: \d+/, `<h3>Your Score for this submission: <strong class="text-cyan-400">${score}/100</strong></h3><p>Your total score is now ${currentPlayer.score}.</p>`)
                         .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
@@ -519,12 +524,12 @@
                 feedbackContainer3.classList.remove('hidden');
                 feedbackResult3.classList.add('hidden');
                 feedbackLoader3.style.display = 'block';
-                
+
                 const prompt = `
                     You are an expert AI Sourcing Coach. A participant has written an outreach message to a passive "Senior DevOps Engineer" who has been at their company for 5 years and spoke at a conference about "Scaling CI/CD Pipelines". The message must be under 100 words.
-                    
+
                     Submission: "${submission}"
-                    
+
                     Your task is to:
                     1.  Analyze the message for personalization, clarity, conciseness, and effectiveness of the call-to-action.
                     2.  Provide a score out of 100. The score MUST be on its own line like this: SCORE: [number].
@@ -535,7 +540,7 @@
 
                 try {
                     const responseText = await callGemini(prompt);
-                    
+
                     const scoreMatch = responseText.match(/SCORE: (\d+)/);
                     let score = 0;
                     if (scoreMatch) {
@@ -547,7 +552,7 @@
                         }
                         renderLeaderboard();
                     }
-                    
+
                     const feedbackHtml = responseText
                         .replace(/SCORE: \d+/, `<h3>Your Score for this submission: <strong class="text-cyan-400">${score}/100</strong></h3><p>Your total score is now ${currentPlayer.score}.</p>`)
                         .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
@@ -572,12 +577,12 @@
                 feedbackContainer4.classList.remove('hidden');
                 feedbackResult4.classList.add('hidden');
                 feedbackLoader4.style.display = 'block';
-                
+
                 const prompt = `
                     You are an expert AI Sourcing Coach specializing in technical sourcing. A participant has written a Google X-ray search string to find Python developers in Berlin with Django experience on GitHub.
-                    
+
                     Submission: "${submission}"
-                    
+
                     Your task is to:
                     1.  Evaluate the X-ray string for correctness, efficiency, and use of advanced operators.
                     2.  Provide a score out of 100. The score MUST be on its own line like this: SCORE: [number].
@@ -588,7 +593,7 @@
 
                 try {
                     const responseText = await callGemini(prompt);
-                    
+
                     const scoreMatch = responseText.match(/SCORE: (\d+)/);
                     let score = 0;
                     if (scoreMatch) {
@@ -600,7 +605,7 @@
                         }
                         renderLeaderboard();
                     }
-                    
+
                     const feedbackHtml = responseText
                         .replace(/SCORE: \d+/, `<h3>Your Score for this submission: <strong class="text-cyan-400">${score}/100</strong></h3><p>Your total score is now ${currentPlayer.score}.</p>`)
                         .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
@@ -640,12 +645,12 @@
                     updateTypingIndicator("I'm sorry, I'm having trouble connecting right now. Please try again in a moment.");
                 }
             }
-            
+
             // Add a message to the chat UI
             const addChatMessage = (text, sender, isTyping = false) => {
                 const messageWrapper = document.createElement('div');
                 messageWrapper.className = `flex ${sender === 'user' ? 'justify-end' : 'justify-start'}`;
-                
+
                 const messageBubble = document.createElement('div');
                 messageBubble.className = `p-3 rounded-lg max-w-md ${sender === 'user' ? 'bg-cyan-600' : 'bg-gray-700'}`;
                 if (isTyping) {
@@ -654,7 +659,7 @@
                 } else {
                     messageBubble.textContent = text;
                 }
-                
+
                 messageWrapper.appendChild(messageBubble);
                 chatBox.appendChild(messageWrapper);
                 chatBox.scrollTop = chatBox.scrollHeight;
@@ -668,7 +673,7 @@
                     typingBubble.removeAttribute('id');
                 }
             };
-            
+
             // Reusable function to call Gemini API with retry logic
             async function callGemini(prompt, retries = 3, delay = 1000) {
                 const payload = {
@@ -684,24 +689,33 @@
                         });
 
                         if (!response.ok) {
+                            // Specific check for 429 Too Many Requests
+                            if (response.status === 429) {
+                                console.warn("Rate limit exceeded. Retrying after backoff...");
+                                throw new Error("Rate limited");
+                            }
                             throw new Error(`HTTP error! status: ${response.status}`);
                         }
 
                         const result = await response.json();
-                        
+
                         if (result.candidates && result.candidates.length > 0 && result.candidates[0].content.parts[0].text) {
                             return result.candidates[0].content.parts[0].text;
                         } else {
+                           // Handle cases where the API returns a successful status but no content, possibly due to safety filters
+                           if (result.candidates && result.candidates.length > 0 && result.candidates[0].finishReason) {
+                               return `The AI Coach couldn't process that response (Finish Reason: ${result.candidates[0].finishReason}). Please try rephrasing your submission.`;
+                           }
                            throw new Error("Invalid response structure from API");
                         }
                     } catch (error) {
-                        console.error(`Attempt ${i + 1} failed:`, error);
+                        console.error(`Attempt ${i + 1} failed:`, error.message);
                         if (i === retries - 1) throw error; // Rethrow last error
                         await new Promise(res => setTimeout(res, delay * Math.pow(2, i))); // Exponential backoff
                     }
                 }
             }
-            
+
             // --- INITIALIZATION ---
             init();
         });
