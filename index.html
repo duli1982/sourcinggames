@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Sourcing League - Powered by Randstad</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .page {
+            display: none;
+        }
+        .page.active {
+            display: block;
+        }
+        /* Custom scrollbar for chat */
+        .chat-box::-webkit-scrollbar {
+            width: 8px;
+        }
+        .chat-box::-webkit-scrollbar-track {
+            background: #2d3748; /* gray-800 */
+        }
+        .chat-box::-webkit-scrollbar-thumb {
+            background-color: #4a5568; /* gray-600 */
+            border-radius: 20px;
+            border: 3px solid #2d3748; /* gray-800 */
+        }
+        /* Loading spinner */
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white">
+
+    <!-- Name Entry Modal -->
+    <div id="nameModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+        <div class="bg-gray-800 p-8 rounded-lg shadow-2xl w-full max-w-md">
+            <h2 class="text-2xl font-bold mb-4 text-cyan-400">Welcome to the AI Sourcing League!</h2>
+            <p class="text-gray-300 mb-6">Please enter your name to join the competition.</p>
+            <form id="nameForm">
+                <input type="text" id="nameInput" placeholder="Your Name" class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500" required>
+                <button type="submit" class="w-full mt-4 bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded-md transition duration-300">Start Sourcing!</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="appContainer" class="hidden">
+        <!-- Header -->
+        <header class="bg-gray-800 shadow-lg sticky top-0 z-40">
+            <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+                <div>
+                    <h1 class="text-2xl font-bold text-white">AI Sourcing League</h1>
+                    <p class="text-sm text-cyan-400">Powered by Randstad & Gemini</p>
+                </div>
+                <div class="hidden md:flex space-x-4">
+                    <a href="#" class="nav-link text-gray-300 hover:text-white" data-page="home">Home</a>
+                    <a href="#" class="nav-link text-gray-300 hover:text-white" data-page="games">The Games</a>
+                    <a href="#" class="nav-link text-gray-300 hover:text-white" data-page="coach">AI Coach</a>
+                    <a href="#" class="nav-link text-gray-300 hover:text-white" data-page="leaderboard">Leaderboard</a>
+                    <a href="#" class="nav-link text-gray-300 hover:text-white" data-page="learning">Learning Hub</a>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobileMenuButton" class="text-white focus:outline-none">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                </div>
+            </nav>
+            <!-- Mobile Menu -->
+            <div id="mobileMenu" class="hidden md:hidden">
+                <a href="#" class="nav-link block py-2 px-4 text-sm text-gray-300 hover:bg-gray-700" data-page="home">Home</a>
+                <a href="#" class="nav-link block py-2 px-4 text-sm text-gray-300 hover:bg-gray-700" data-page="games">The Games</a>
+                <a href="#" class="nav-link block py-2 px-4 text-sm text-gray-300 hover:bg-gray-700" data-page="coach">AI Coach</a>
+                <a href="#" class="nav-link block py-2 px-4 text-sm text-gray-300 hover:bg-gray-700" data-page="leaderboard">Leaderboard</a>
+                <a href="#" class="nav-link block py-2 px-4 text-sm text-gray-300 hover:bg-gray-700" data-page="learning">Learning Hub</a>
+            </div>
+        </header>
+
+        <main class="container mx-auto p-6">
+            <!-- Home Page -->
+            <div id="home" class="page active">
+                <div class="bg-gray-800 rounded-lg p-8 shadow-xl">
+                    <h2 class="text-3xl font-bold text-cyan-400 mb-4">Welcome, <span id="playerNameHome"></span>!</h2>
+                    <p class="text-gray-300 mb-6">You are now part of a global competition for top tech recruiters. Compete in sourcing games, learn from our AI Coach, and climb the leaderboard to prove you're the best.</p>
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div class="bg-gray-700 p-6 rounded-lg">
+                            <h3 class="font-bold text-xl mb-2 text-white">Compete & Win</h3>
+                            <p class="text-gray-400">Tackle real-world sourcing challenges and earn points for your precision and creativity.</p>
+                        </div>
+                        <div class="bg-gray-700 p-6 rounded-lg">
+                            <h3 class="font-bold text-xl mb-2 text-white">Learn with AI</h3>
+                            <p class="text-gray-400">Get personalized feedback and strategies from your dedicated AI Coach, powered by Gemini.</p>
+                        </div>
+                        <div class="bg-gray-700 p-6 rounded-lg">
+                            <h3 class="font-bold text-xl mb-2 text-white">Climb the Ranks</h3>
+                            <p class="text-gray-400">See how you stack up against your peers on a live, global leaderboard.</p>
+                        </div>
+                    </div>
+                     <button class="mt-8 bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-3 px-6 rounded-md transition duration-300 nav-link" data-page="games">Go to The Games</button>
+                </div>
+            </div>
+
+            <!-- The Games Page -->
+            <div id="games" class="page">
+                 <h2 class="text-3xl font-bold text-cyan-400 mb-6">The Games</h2>
+                 <div class="bg-gray-800 rounded-lg p-8 shadow-xl">
+                    <h3 class="text-xl font-bold mb-2">Game 1: The Boolean Blacksmith</h3>
+                    <p class="text-gray-400 mb-4">You have a new role: "Senior Backend Engineer" specializing in distributed systems, located in Vienna, Austria. The client requires experience with Go (Golang) and Kubernetes. They have a strong preference for candidates who have contributed to open-source projects.</p>
+                    <p class="text-gray-300 mb-6 font-semibold">Your task: Craft the most effective Boolean search string to find these candidates on a professional networking site.</p>
+                    
+                    <form id="gameForm">
+                        <textarea id="gameInput" rows="4" class="w-full bg-gray-700 border border-gray-600 rounded-md p-3 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500" placeholder="e.g., (engineer OR developer) AND ..."></textarea>
+                        <button type="submit" class="mt-4 bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded-md transition duration-300">Submit & Get Feedback</button>
+                    </form>
+
+                    <div id="feedbackContainer" class="mt-6 hidden">
+                        <div class="flex items-center mb-4">
+                            <h4 class="text-2xl font-bold text-cyan-400">AI Coach Feedback</h4>
+                            <div id="feedbackLoader" class="loader ml-4"></div>
+                        </div>
+                        <div id="feedbackResult" class="bg-gray-700 p-6 rounded-lg prose prose-invert max-w-none text-gray-300"></div>
+                    </div>
+                 </div>
+
+                 <!-- Game 2 -->
+                <div class="bg-gray-800 rounded-lg p-8 shadow-xl mt-8">
+                    <h3 class="text-xl font-bold mb-2">Game 2: The Persona Profiler</h3>
+                    <p class="text-gray-400 mb-4">Analyze the following job description snippet for a "Lead UX Designer" and create a concise candidate persona. Focus on key skills, experience level, and potential motivations.</p>
+                    <div class="text-sm bg-gray-700 p-4 rounded-md mb-4 border-l-4 border-cyan-500">
+                        "We're seeking a Lead UX Designer to own the user experience for our flagship B2B SaaS product. You'll guide a team of 3 designers, work with product managers to translate complex requirements into intuitive workflows, and champion a user-centered design culture. Must have 7+ years of experience, a portfolio showcasing complex problem-solving, and proficiency in Figma. Experience with data visualization is a huge plus."
+                    </div>
+                    <p class="text-gray-300 mb-6 font-semibold">Your task: Write a short candidate persona (3-4 sentences) that captures the essence of the ideal candidate.</p>
+                    
+                    <form id="gameForm2">
+                        <textarea id="gameInput2" rows="4" class="w-full bg-gray-700 border border-gray-600 rounded-md p-3 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500" placeholder="e.g., An experienced design leader motivated by mentoring..."></textarea>
+                        <button type="submit" class="mt-4 bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded-md transition duration-300">Submit & Get Feedback</button>
+                    </form>
+
+                    <div id="feedbackContainer2" class="mt-6 hidden">
+                        <div class="flex items-center mb-4">
+                            <h4 class="text-2xl font-bold text-cyan-400">AI Coach Feedback</h4>
+                            <div id="feedbackLoader2" class="loader ml-4"></div>
+                        </div>
+                        <div id="feedbackResult2" class="bg-gray-700 p-6 rounded-lg prose prose-invert max-w-none text-gray-300"></div>
+                    </div>
+                </div>
+
+                <!-- Game 3 -->
+                <div class="bg-gray-800 rounded-lg p-8 shadow-xl mt-8">
+                    <h3 class="text-xl font-bold mb-2">Game 3: The Outreach Originator</h3>
+                    <p class="text-gray-400 mb-4">You've found a promising passive candidate for a "Senior DevOps Engineer" role. Her online profile shows she's been at her current company for 5 years and has spoken at a conference about "Scaling CI/CD Pipelines".</p>
+                    <p class="text-gray-300 mb-6 font-semibold">Your task: Write a concise and personalized outreach message (under 100 words) to this candidate to gauge her interest.</p>
+                    
+                    <form id="gameForm3">
+                        <textarea id="gameInput3" rows="5" class="w-full bg-gray-700 border border-gray-600 rounded-md p-3 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500" placeholder="e.g., Hi [Candidate Name], I was impressed by your talk on..."></textarea>
+                        <button type="submit" class="mt-4 bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded-md transition duration-300">Submit & Get Feedback</button>
+                    </form>
+
+                    <div id="feedbackContainer3" class="mt-6 hidden">
+                        <div class="flex items-center mb-4">
+                            <h4 class="text-2xl font-bold text-cyan-400">AI Coach Feedback</h4>
+                            <div id="feedbackLoader3" class="loader ml-4"></div>
+                        </div>
+                        <div id="feedbackResult3" class="bg-gray-700 p-6 rounded-lg prose prose-invert max-w-none text-gray-300"></div>
+                    </div>
+                </div>
+
+                <!-- Game 4 -->
+                <div class="bg-gray-800 rounded-lg p-8 shadow-xl mt-8">
+                    <h3 class="text-xl font-bold mb-2">Game 4: The X-Ray Expert</h3>
+                    <p class="text-gray-400 mb-4">You need to find Python developers in Berlin who have experience with Django and have profiles on GitHub. Standard searches are not yielding good results.</p>
+                    <p class="text-gray-300 mb-6 font-semibold">Your task: Write a Google X-ray search string to find user profiles on GitHub that match these criteria.</p>
+                    
+                    <form id="gameForm4">
+                        <textarea id="gameInput4" rows="4" class="w-full bg-gray-700 border border-gray-600 rounded-md p-3 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500" placeholder="e.g., site:github.com ..."></textarea>
+                        <button type="submit" class="mt-4 bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded-md transition duration-300">Submit & Get Feedback</button>
+                    </form>
+
+                    <div id="feedbackContainer4" class="mt-6 hidden">
+                        <div class="flex items-center mb-4">
+                            <h4 class="text-2xl font-bold text-cyan-400">AI Coach Feedback</h4>
+                            <div id="feedbackLoader4" class="loader ml-4"></div>
+                        </div>
+                        <div id="feedbackResult4" class="bg-gray-700 p-6 rounded-lg prose prose-invert max-w-none text-gray-300"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Coach Page -->
+            <div id="coach" class="page">
+                <h2 class="text-3xl font-bold text-cyan-400 mb-6">AI Sourcing Coach</h2>
+                <div class="bg-gray-800 rounded-lg shadow-xl h-[60vh] flex flex-col">
+                    <div id="chatBox" class="chat-box flex-1 p-4 overflow-y-auto space-y-4">
+                        <!-- Chat messages will be appended here -->
+                        <div class="flex justify-start">
+                            <div class="bg-gray-700 p-3 rounded-lg max-w-md">
+                                <p>Hello! I'm your AI Sourcing Coach, powered by Gemini. Ask me for advice on sourcing strategies, how to improve a search string, or anything else you need to win the league!</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-gray-700 border-t border-gray-600">
+                        <form id="coachForm" class="flex items-center space-x-2">
+                            <input type="text" id="coachInput" class="flex-1 bg-gray-600 border border-gray-500 rounded-full px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500" placeholder="Ask your coach...">
+                            <button type="submit" class="bg-cyan-600 hover:bg-cyan-700 text-white font-bold p-2 rounded-full">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Leaderboard Page -->
+            <div id="leaderboard" class="page">
+                <h2 class="text-3xl font-bold text-cyan-400 mb-6">Leaderboard</h2>
+                <div class="bg-gray-800 rounded-lg p-8 shadow-xl">
+                    <table class="w-full text-left">
+                        <thead class="border-b-2 border-gray-600">
+                            <tr>
+                                <th class="p-3 text-lg">Rank</th>
+                                <th class="p-3 text-lg">Name</th>
+                                <th class="p-3 text-lg">Score</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboardBody">
+                            <!-- Leaderboard rows will be generated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Learning Hub Page -->
+            <div id="learning" class="page">
+                <h2 class="text-3xl font-bold text-cyan-400 mb-6">Learning Hub</h2>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg hover:shadow-cyan-500/20 hover:-translate-y-1 transition-all duration-300">
+                        <h3 class="font-bold text-xl mb-2 text-white">Advanced Boolean</h3>
+                        <p class="text-gray-400 mb-4">Go beyond AND, OR, NOT. Master X-ray searching, semantic search, and more.</p>
+                        <a href="#" class="text-cyan-400 font-semibold">Start Module &rarr;</a>
+                    </div>
+                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg hover:shadow-cyan-500/20 hover:-translate-y-1 transition-all duration-300">
+                        <h3 class="font-bold text-xl mb-2 text-white">Candidate Engagement</h3>
+                        <p class="text-gray-400 mb-4">Learn to craft outreach messages that get replies and build talent pipelines.</p>
+                        <a href="#" class="text-cyan-400 font-semibold">Start Module &rarr;</a>
+                    </div>
+                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg hover:shadow-cyan-500/20 hover:-translate-y-1 transition-all duration-300">
+                        <h3 class="font-bold text-xl mb-2 text-white">Decoding Job Descriptions</h3>
+                        <p class="text-gray-400 mb-4">Use AI to extract key skills and build the perfect candidate persona.</p>
+                        <a href="#" class="text-cyan-400 font-semibold">Start Module &rarr;</a>
+                    </div>
+                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg hover:shadow-cyan-500/20 hover:-translate-y-1 transition-all duration-300">
+                        <h3 class="font-bold text-xl mb-2 text-white">Sourcing on GitHub</h3>
+                        <p class="text-gray-400 mb-4">Find top developers by analyzing their code, contributions, and activity.</p>
+                        <a href="#" class="text-cyan-400 font-semibold">Start Module &rarr;</a>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- STATE MANAGEMENT ---
+            let currentPlayer = {
+                name: '',
+                score: 0
+            };
+
+            let leaderboardData = [
+                { name: 'Alex Johnson', score: 150 },
+                { name: 'Maria Garcia', score: 135 },
+                { name: 'Chen Wei', score: 110 },
+                { name: 'Fatima Al-Sayed', score: 95 },
+                { name: 'John Smith', score: 80 }
+            ];
+
+            // --- DOM ELEMENTS ---
+            const nameModal = document.getElementById('nameModal');
+            const nameForm = document.getElementById('nameForm');
+            const nameInput = document.getElementById('nameInput');
+            const appContainer = document.getElementById('appContainer');
+            const pages = document.querySelectorAll('.page');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const playerNameHome = document.getElementById('playerNameHome');
+            const leaderboardBody = document.getElementById('leaderboardBody');
+            const gameForm = document.getElementById('gameForm');
+            const gameInput = document.getElementById('gameInput');
+            const feedbackContainer = document.getElementById('feedbackContainer');
+            const feedbackLoader = document.getElementById('feedbackLoader');
+            const feedbackResult = document.getElementById('feedbackResult');
+            const gameForm2 = document.getElementById('gameForm2');
+            const gameInput2 = document.getElementById('gameInput2');
+            const feedbackContainer2 = document.getElementById('feedbackContainer2');
+            const feedbackLoader2 = document.getElementById('feedbackLoader2');
+            const feedbackResult2 = document.getElementById('feedbackResult2');
+            const gameForm3 = document.getElementById('gameForm3');
+            const gameInput3 = document.getElementById('gameInput3');
+            const feedbackContainer3 = document.getElementById('feedbackContainer3');
+            const feedbackLoader3 = document.getElementById('feedbackLoader3');
+            const feedbackResult3 = document.getElementById('feedbackResult3');
+            const gameForm4 = document.getElementById('gameForm4');
+            const gameInput4 = document.getElementById('gameInput4');
+            const feedbackContainer4 = document.getElementById('feedbackContainer4');
+            const feedbackLoader4 = document.getElementById('feedbackLoader4');
+            const feedbackResult4 = document.getElementById('feedbackResult4');
+            const coachForm = document.getElementById('coachForm');
+            const coachInput = document.getElementById('coachInput');
+            const chatBox = document.getElementById('chatBox');
+            const mobileMenuButton = document.getElementById('mobileMenuButton');
+            const mobileMenu = document.getElementById('mobileMenu');
+            
+            // --- GEMINI API CONFIG ---
+            // NOTE: In a real application, the API key would not be exposed here.
+            // Canvas environment will provide the necessary credentials.
+            const API_KEY = ""; 
+            const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;
+            
+            // --- FUNCTIONS ---
+
+            // Initialize the application
+            const init = () => {
+                nameForm.addEventListener('submit', handleNameSubmit);
+                navLinks.forEach(link => link.addEventListener('click', handleNavClick));
+                gameForm.addEventListener('submit', handleGameSubmit);
+                gameForm2.addEventListener('submit', handleGameSubmit2);
+                gameForm3.addEventListener('submit', handleGameSubmit3);
+                gameForm4.addEventListener('submit', handleGameSubmit4);
+                coachForm.addEventListener('submit', handleCoachSubmit);
+                mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+            };
+
+            // Handle user name submission
+            const handleNameSubmit = (e) => {
+                e.preventDefault();
+                const name = nameInput.value.trim();
+                if (name) {
+                    currentPlayer.name = name;
+                    // Add player to leaderboard if not already there
+                    if (!leaderboardData.some(p => p.name === name)) {
+                        leaderboardData.push({ name: name, score: 0 });
+                    }
+                    playerNameHome.textContent = name;
+                    nameModal.style.display = 'none';
+                    appContainer.classList.remove('hidden');
+                    renderLeaderboard();
+                    showPage('home');
+                }
+            };
+
+            // Handle navigation between pages
+            const handleNavClick = (e) => {
+                e.preventDefault();
+                const pageId = e.target.dataset.page;
+                showPage(pageId);
+                // Close mobile menu on navigation
+                if (!mobileMenu.classList.contains('hidden')) {
+                    mobileMenu.classList.add('hidden');
+                }
+            };
+            
+            // Show a specific page and hide others
+            const showPage = (pageId) => {
+                pages.forEach(page => {
+                    page.classList.toggle('active', page.id === pageId);
+                });
+            };
+
+            // Render the leaderboard table
+            const renderLeaderboard = () => {
+                // Sort by score descending
+                leaderboardData.sort((a, b) => b.score - a.score);
+                
+                leaderboardBody.innerHTML = ''; // Clear existing table
+                
+                leaderboardData.forEach((player, index) => {
+                    const row = document.createElement('tr');
+                    const isCurrentUser = player.name === currentPlayer.name;
+                    row.className = isCurrentUser 
+                        ? 'bg-cyan-900/50 font-bold' 
+                        : 'border-b border-gray-700 hover:bg-gray-700/50';
+                    
+                    row.innerHTML = `
+                        <td class="p-3">${index + 1}</td>
+                        <td class="p-3">${player.name} ${isCurrentUser ? '(You)' : ''}</td>
+                        <td class="p-3">${player.score}</td>
+                    `;
+                    leaderboardBody.appendChild(row);
+                });
+            };
+
+            // Handle game submission
+            async function handleGameSubmit(e) {
+                e.preventDefault();
+                const submission = gameInput.value.trim();
+                if (!submission) return;
+
+                feedbackContainer.classList.remove('hidden');
+                feedbackResult.classList.add('hidden');
+                feedbackLoader.style.display = 'block';
+                
+                const prompt = `
+                    You are an expert AI Sourcing Coach for recruiters. A participant has submitted the following Boolean search string for a 'Senior Backend Engineer' role in Vienna, Austria, with skills in Go (Golang), Kubernetes, and open-source contributions.
+                    
+                    Submission: "${submission}"
+                    
+                    Your task is to:
+                    1.  Analyze the string for effectiveness, precision, and potential missed keywords.
+                    2.  Provide a score out of 100. The score MUST be on its own line like this: SCORE: [number].
+                    3.  Give 3 concrete, actionable tips for improvement in a bulleted list.
+                    4.  Provide an improved version of their string.
+                    5.  Format your response in simple markdown.
+                `;
+
+                try {
+                    const responseText = await callGemini(prompt);
+                    
+                    // Extract score and update player data
+                    const scoreMatch = responseText.match(/SCORE: (\d+)/);
+                    let score = 0;
+                    if (scoreMatch) {
+                        score = parseInt(scoreMatch[1], 10);
+                        const playerIndex = leaderboardData.findIndex(p => p.name === currentPlayer.name);
+                        if (playerIndex !== -1) {
+                            leaderboardData[playerIndex].score += score;
+                            currentPlayer.score = leaderboardData[playerIndex].score;
+                        }
+                        renderLeaderboard();
+                    }
+                    
+                    // Display feedback
+                    const feedbackHtml = responseText
+                        .replace(/SCORE: \d+/, `<h3>Your Score for this submission: <strong class="text-cyan-400">${score}/100</strong></h3><p>Your total score is now ${currentPlayer.score}.</p>`)
+                        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                        .replace(/\n/g, '<br>');
+
+                    feedbackResult.innerHTML = feedbackHtml;
+                } catch (error) {
+                    console.error("Error calling Gemini API:", error);
+                    feedbackResult.innerHTML = `<p class="text-red-400">Sorry, there was an error getting feedback. Please try again later.</p>`;
+                } finally {
+                    feedbackLoader.style.display = 'none';
+                    feedbackResult.classList.remove('hidden');
+                }
+            }
+
+            // Handle game 2 submission
+            async function handleGameSubmit2(e) {
+                e.preventDefault();
+                const submission = gameInput2.value.trim();
+                if (!submission) return;
+
+                feedbackContainer2.classList.remove('hidden');
+                feedbackResult2.classList.add('hidden');
+                feedbackLoader2.style.display = 'block';
+                
+                const prompt = `
+                    You are an expert AI Sourcing Coach. A participant has analyzed a job description for a "Lead UX Designer" and submitted a candidate persona.
+                    
+                    Job Description Snippet: "We're seeking a Lead UX Designer to own the user experience for our flagship B2B SaaS product. You'll guide a team of 3 designers, work with product managers to translate complex requirements into intuitive workflows, and champion a user-centered design culture. Must have 7+ years of experience, a portfolio showcasing complex problem-solving, and proficiency in Figma. Experience with data visualization is a huge plus."
+                    
+                    Submission: "${submission}"
+                    
+                    Your task is to:
+                    1.  Evaluate how well the persona captures the key aspects of the role (leadership, experience, skills, motivation).
+                    2.  Provide a score out of 100. The score MUST be on its own line like this: SCORE: [number].
+                    3.  Give 2-3 concrete tips for making the persona more insightful.
+                    4.  Format your response in simple markdown.
+                `;
+
+                try {
+                    const responseText = await callGemini(prompt);
+                    
+                    const scoreMatch = responseText.match(/SCORE: (\d+)/);
+                    let score = 0;
+                    if (scoreMatch) {
+                        score = parseInt(scoreMatch[1], 10);
+                        const playerIndex = leaderboardData.findIndex(p => p.name === currentPlayer.name);
+                        if (playerIndex !== -1) {
+                            leaderboardData[playerIndex].score += score;
+                            currentPlayer.score = leaderboardData[playerIndex].score;
+                        }
+                        renderLeaderboard();
+                    }
+                    
+                    const feedbackHtml = responseText
+                        .replace(/SCORE: \d+/, `<h3>Your Score for this submission: <strong class="text-cyan-400">${score}/100</strong></h3><p>Your total score is now ${currentPlayer.score}.</p>`)
+                        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                        .replace(/\n/g, '<br>');
+
+                    feedbackResult2.innerHTML = feedbackHtml;
+                } catch (error) {
+                    console.error("Error calling Gemini API:", error);
+                    feedbackResult2.innerHTML = `<p class="text-red-400">Sorry, there was an error getting feedback. Please try again later.</p>`;
+                } finally {
+                    feedbackLoader2.style.display = 'none';
+                    feedbackResult2.classList.remove('hidden');
+                }
+            }
+
+            // Handle game 3 submission
+            async function handleGameSubmit3(e) {
+                e.preventDefault();
+                const submission = gameInput3.value.trim();
+                if (!submission) return;
+
+                feedbackContainer3.classList.remove('hidden');
+                feedbackResult3.classList.add('hidden');
+                feedbackLoader3.style.display = 'block';
+                
+                const prompt = `
+                    You are an expert AI Sourcing Coach. A participant has written an outreach message to a passive "Senior DevOps Engineer" who has been at their company for 5 years and spoke at a conference about "Scaling CI/CD Pipelines". The message must be under 100 words.
+                    
+                    Submission: "${submission}"
+                    
+                    Your task is to:
+                    1.  Analyze the message for personalization, clarity, conciseness, and effectiveness of the call-to-action.
+                    2.  Provide a score out of 100. The score MUST be on its own line like this: SCORE: [number].
+                    3.  Give 3 actionable tips for improving the outreach message.
+                    4.  Provide an improved version of the message.
+                    5.  Format your response in simple markdown.
+                `;
+
+                try {
+                    const responseText = await callGemini(prompt);
+                    
+                    const scoreMatch = responseText.match(/SCORE: (\d+)/);
+                    let score = 0;
+                    if (scoreMatch) {
+                        score = parseInt(scoreMatch[1], 10);
+                        const playerIndex = leaderboardData.findIndex(p => p.name === currentPlayer.name);
+                        if (playerIndex !== -1) {
+                            leaderboardData[playerIndex].score += score;
+                            currentPlayer.score = leaderboardData[playerIndex].score;
+                        }
+                        renderLeaderboard();
+                    }
+                    
+                    const feedbackHtml = responseText
+                        .replace(/SCORE: \d+/, `<h3>Your Score for this submission: <strong class="text-cyan-400">${score}/100</strong></h3><p>Your total score is now ${currentPlayer.score}.</p>`)
+                        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                        .replace(/\n/g, '<br>');
+
+                    feedbackResult3.innerHTML = feedbackHtml;
+                } catch (error) {
+                    console.error("Error calling Gemini API:", error);
+                    feedbackResult3.innerHTML = `<p class="text-red-400">Sorry, there was an error getting feedback. Please try again later.</p>`;
+                } finally {
+                    feedbackLoader3.style.display = 'none';
+                    feedbackResult3.classList.remove('hidden');
+                }
+            }
+
+            // Handle game 4 submission
+            async function handleGameSubmit4(e) {
+                e.preventDefault();
+                const submission = gameInput4.value.trim();
+                if (!submission) return;
+
+                feedbackContainer4.classList.remove('hidden');
+                feedbackResult4.classList.add('hidden');
+                feedbackLoader4.style.display = 'block';
+                
+                const prompt = `
+                    You are an expert AI Sourcing Coach specializing in technical sourcing. A participant has written a Google X-ray search string to find Python developers in Berlin with Django experience on GitHub.
+                    
+                    Submission: "${submission}"
+                    
+                    Your task is to:
+                    1.  Evaluate the X-ray string for correctness, efficiency, and use of advanced operators.
+                    2.  Provide a score out of 100. The score MUST be on its own line like this: SCORE: [number].
+                    3.  Give 3 technical tips to refine the search string for better results.
+                    4.  Provide an improved, more robust version of the string.
+                    5.  Format your response in simple markdown.
+                `;
+
+                try {
+                    const responseText = await callGemini(prompt);
+                    
+                    const scoreMatch = responseText.match(/SCORE: (\d+)/);
+                    let score = 0;
+                    if (scoreMatch) {
+                        score = parseInt(scoreMatch[1], 10);
+                        const playerIndex = leaderboardData.findIndex(p => p.name === currentPlayer.name);
+                        if (playerIndex !== -1) {
+                            leaderboardData[playerIndex].score += score;
+                            currentPlayer.score = leaderboardData[playerIndex].score;
+                        }
+                        renderLeaderboard();
+                    }
+                    
+                    const feedbackHtml = responseText
+                        .replace(/SCORE: \d+/, `<h3>Your Score for this submission: <strong class="text-cyan-400">${score}/100</strong></h3><p>Your total score is now ${currentPlayer.score}.</p>`)
+                        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                        .replace(/\n/g, '<br>');
+
+                    feedbackResult4.innerHTML = feedbackHtml;
+                } catch (error) {
+                    console.error("Error calling Gemini API:", error);
+                    feedbackResult4.innerHTML = `<p class="text-red-400">Sorry, there was an error getting feedback. Please try again later.</p>`;
+                } finally {
+                    feedbackLoader4.style.display = 'none';
+                    feedbackResult4.classList.remove('hidden');
+                }
+            }
+
+
+            // Handle AI Coach chat submission
+            async function handleCoachSubmit(e) {
+                e.preventDefault();
+                const userInput = coachInput.value.trim();
+                if (!userInput) return;
+
+                addChatMessage(userInput, 'user');
+                coachInput.value = '';
+                addChatMessage('...', 'coach', true); // Typing indicator
+
+                const prompt = `
+                    You are a helpful and encouraging AI Sourcing Coach for recruiters participating in a competition. A user has asked you the following question. Provide a concise, helpful, and friendly answer.
+                    Question: "${userInput}"
+                `;
+
+                try {
+                    const responseText = await callGemini(prompt);
+                    updateTypingIndicator(responseText);
+                } catch (error) {
+                    console.error("Error calling Gemini API:", error);
+                    updateTypingIndicator("I'm sorry, I'm having trouble connecting right now. Please try again in a moment.");
+                }
+            }
+            
+            // Add a message to the chat UI
+            const addChatMessage = (text, sender, isTyping = false) => {
+                const messageWrapper = document.createElement('div');
+                messageWrapper.className = `flex ${sender === 'user' ? 'justify-end' : 'justify-start'}`;
+                
+                const messageBubble = document.createElement('div');
+                messageBubble.className = `p-3 rounded-lg max-w-md ${sender === 'user' ? 'bg-cyan-600' : 'bg-gray-700'}`;
+                if (isTyping) {
+                    messageBubble.id = 'typing-indicator';
+                    messageBubble.innerHTML = `<div class="flex items-center space-x-1"><div class="w-2 h-2 bg-gray-400 rounded-full animate-pulse"></div><div class="w-2 h-2 bg-gray-400 rounded-full animate-pulse [animation-delay:0.2s]"></div><div class="w-2 h-2 bg-gray-400 rounded-full animate-pulse [animation-delay:0.4s]"></div></div>`;
+                } else {
+                    messageBubble.textContent = text;
+                }
+                
+                messageWrapper.appendChild(messageBubble);
+                chatBox.appendChild(messageWrapper);
+                chatBox.scrollTop = chatBox.scrollHeight;
+            };
+
+            // Update the 'typing' indicator with the actual response
+            const updateTypingIndicator = (text) => {
+                const typingBubble = document.getElementById('typing-indicator');
+                if (typingBubble) {
+                    typingBubble.innerHTML = text; // Replace dots with actual text
+                    typingBubble.removeAttribute('id');
+                }
+            };
+            
+            // Reusable function to call Gemini API with retry logic
+            async function callGemini(prompt, retries = 3, delay = 1000) {
+                const payload = {
+                    contents: [{ parts: [{ text: prompt }] }],
+                };
+
+                for (let i = 0; i < retries; i++) {
+                    try {
+                        const response = await fetch(API_URL, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+
+                        const result = await response.json();
+                        
+                        if (result.candidates && result.candidates.length > 0 && result.candidates[0].content.parts[0].text) {
+                            return result.candidates[0].content.parts[0].text;
+                        } else {
+                           throw new Error("Invalid response structure from API");
+                        }
+                    } catch (error) {
+                        console.error(`Attempt ${i + 1} failed:`, error);
+                        if (i === retries - 1) throw error; // Rethrow last error
+                        await new Promise(res => setTimeout(res, delay * Math.pow(2, i))); // Exponential backoff
+                    }
+                }
+            }
+            
+            // --- INITIALIZATION ---
+            init();
+        });
+    </script>
+</body>
+</html>
