@@ -1,0 +1,24 @@
+{
+  "users": [
+    { "id": 1, "name": "Alex Johnson", "score": 150 },
+    { "id": 2, "name": "Maria Garcia", "score": 135 },
+    { "id": 3, "name": "Chen Wei", "score": 110 }
+  ],
+  "games": [
+    {
+      "id": "game1-boolean",
+      "title": "The Boolean Blacksmith",
+      "description": "You have a new role: \"Senior Backend Engineer\" specializing in distributed systems, located in Vienna, Austria. The client requires experience with Go (Golang) and Kubernetes. They have a strong preference for candidates who have contributed to open-source projects.",
+      "task": "Craft the most effective Boolean search string to find these candidates on a professional networking site.",
+      "releaseDate": "2025-09-19T09:00:00.000Z"
+    },
+    {
+      "id": "game2-persona",
+      "title": "The Persona Profiler",
+      "description": "Analyze the job description for a \"Lead UX Designer\" and create a concise candidate persona. Focus on key skills, experience level, and potential motivations.",
+      "task": "Write a short candidate persona (3-4 sentences) that captures the essence of the ideal candidate.",
+      "releaseDate": "2025-09-26T09:00:00.000Z"
+    }
+  ],
+  "submissions": []
+}
